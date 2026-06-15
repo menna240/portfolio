@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mohamed Ali Mandour | Electrical Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --pink:#ec4899;--cyan:#06b6d4;--amber:#f59e0b;--indigo:#4338ca;
+  --bg:#050510;--card:#111128;--border:rgba(99,102,241,.18);
+  --text:#e2e8f0;--muted:#94a3b8;--r:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--pink),var(--cyan));border-radius:99px;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");background-size:180px;pointer-events:none;z-index:9998;opacity:.6;}
+
+/* CURSOR */
+#cdot{position:fixed;width:8px;height:8px;background:var(--cyan);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--cyan),0 0 20px var(--cyan);transition:width .15s,height .15s,background .15s;}
+#cring{position:fixed;width:34px;height:34px;border:2px solid rgba(6,182,212,.45);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:100000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .7s,visibility .7s;}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none;}
+.l-init{font-family:'Syne',sans-serif;font-size:clamp(60px,13vw,116px);font-weight:800;background:linear-gradient(135deg,var(--pink),var(--cyan),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lpulse 1.4s ease-in-out infinite;}
+@keyframes lpulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.l-bar-wrap{width:210px;height:3px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
+.l-bar{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan),var(--amber));border-radius:99px;animation:lfill 2s ease forwards;}
+@keyframes lfill{to{width:100%;}}
+.l-txt{font-size:12px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;}
+
+/* CANVAS */
+#pc{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:64px;padding:0 clamp(14px,4vw,72px);display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,16,.72);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);transform:translateY(-100%);animation:navdown .55s .35s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes navdown{to{transform:translateY(0);}}
+.nlogo{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:none;background-color:transparent;cursor:pointer;padding:0;}
+.nlinks{display:flex;gap:clamp(10px,2.5vw,30px);list-style:none;}
+.nlinks button{font-size:14px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;padding:4px 0;position:relative;font-family:'DM Sans',sans-serif;transition:color .25s;}
+.nlinks button::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:99px;transition:width .25s;}
+.nlinks button:hover,.nlinks button.on{color:var(--text);}
+.nlinks button.on::after,.nlinks button:hover::after{width:100%;}
+
+/* PAGES */
+.pg{display:none;min-height:100vh;padding:82px clamp(14px,5vw,72px) 56px;position:relative;z-index:1;}
+.pg.on{display:block;animation:pgfade .38s ease;}
+@keyframes pgfade{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* HELPERS */
+.slabel{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;}
+.slabel::before{content:'';width:22px;height:2px;background:var(--cyan);border-radius:2px;}
+h2.stitle{font-family:'Syne',sans-serif;font-size:clamp(26px,4.5vw,50px);font-weight:800;line-height:1.1;margin-bottom:clamp(28px,5vw,56px);}
+.btn{padding:12px 26px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.25s;border:none;}
+.btnp{background:linear-gradient(135deg,var(--pink),var(--indigo));color:#fff;box-shadow:0 0 22px rgba(236,72,153,.28);}
+.btnp:hover{box-shadow:0 0 34px rgba(236,72,153,.5);transform:translateY(-2px);}
+.btno{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btno:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
+
+/* ── HOME ── */
+#pg-home{display:none;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding-top:100px;}
+#pg-home.on{display:grid;}
+.atag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);font-size:13px;color:#34d399;margin-bottom:24px;}
+.atag::before{content:'';width:8px;height:8px;background:#34d399;border-radius:50%;box-shadow:0 0 6px #34d399;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.28;}}
+.hname{font-family:'Syne',sans-serif;font-size:clamp(38px,6.5vw,80px);font-weight:800;line-height:1.0;background:linear-gradient(135deg,#fff 28%,var(--pink) 52%,var(--cyan) 76%,var(--amber));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite;margin-bottom:14px;}
+@keyframes shimmer{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+.hsub{font-size:clamp(14px,2vw,19px);color:var(--muted);margin-bottom:28px;}
+.hsub strong{color:var(--cyan);}
+.hctas{display:flex;gap:12px;flex-wrap:wrap;}
+
+/* 3D CARD */
+.hright{display:flex;justify-content:center;align-items:center;}
+.cscene{position:relative;width:290px;height:320px;display:flex;align-items:center;justify-content:center;}
+.corb{position:absolute;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(99,102,241,.38),rgba(236,72,153,.18),transparent 68%);filter:blur(38px);animation:orbf 6s ease-in-out infinite;}
+@keyframes orbf{0%,100%{transform:scale(1) translateY(0);}50%{transform:scale(1.09) translateY(-11px);}}
+.rs1{position:absolute;width:268px;height:268px;border-radius:50%;border:2px dashed rgba(6,182,212,.28);animation:rspin 20s linear infinite;}
+.rs2{position:absolute;width:228px;height:228px;border-radius:50%;border:1px dashed rgba(236,72,153,.18);animation:rspin 14s linear infinite reverse;}
+@keyframes rspin{to{transform:rotate(360deg);}}
+.fcard{position:relative;z-index:2;width:200px;padding:24px;border-radius:18px;background:rgba(17,17,40,.82);border:1px solid var(--border);backdrop-filter:blur(10px);box-shadow:0 22px 60px rgba(0,0,0,.4);animation:cfloat 5s ease-in-out infinite;text-align:center;}
+@keyframes cfloat{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-15px) rotate(1deg);}}
+.fav{width:72px;height:72px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--indigo),var(--pink));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;box-shadow:0 0 22px rgba(236,72,153,.28);}
+.fname{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;}
+.frole{font-size:10px;color:var(--cyan);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em;}
+.fstats{display:flex;gap:9px;justify-content:center;}
+.sv{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;}
+.sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+
+/* MARQUEE */
+.mwrap{overflow:hidden;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(17,17,40,.28);margin:32px clamp(-14px,-5vw,-72px) 0;}
+.mtrack{display:flex;gap:32px;animation:mq 28s linear infinite;white-space:nowrap;width:max-content;}
+@keyframes mq{to{transform:translateX(-50%);}}
+.mi{display:inline-flex;align-items:center;gap:9px;font-family:'Syne',sans-serif;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.mi::after{content:'✦';color:var(--pink);font-size:9px;}
+
+/* ── SKILLS ── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px);}
+.ski{margin-bottom:20px;}
+.skh{display:flex;justify-content:space-between;margin-bottom:7px;font-size:14px;}
+.skh span:last-child{color:var(--muted);}
+.skt{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;}
+.skf{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--indigo),var(--pink));transition:width 1.1s cubic-bezier(.22,1,.36,1);}
+.chtit{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:18px;}
+.chcloud{display:flex;flex-wrap:wrap;gap:9px;}
+.chip{padding:6px 15px;border-radius:99px;font-size:13px;font-weight:500;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);cursor:default;transition:transform .28s,color .28s,border-color .28s,box-shadow .28s;}
+.chip:hover{transform:translateY(-4px);color:var(--text);border-color:var(--cyan);box-shadow:0 4px 14px rgba(6,182,212,.18);}
+
+/* ── EXPERIENCE ── */
+.tl{position:relative;display:flex;flex-direction:column;}
+.tl::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--pink),var(--cyan),var(--amber),transparent);border-radius:2px;}
+.tli{display:flex;gap:26px;padding-bottom:32px;}
+.tldot{flex-shrink:0;width:48px;height:48px;border-radius:50%;background:var(--card);border:2px solid var(--pink);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:var(--pink);text-transform:uppercase;text-align:center;line-height:1.2;flex-direction:column;position:relative;z-index:1;}
+.tlc{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 24px;transition:transform .28s,box-shadow .28s,border-color .28s;}
+.tlc:hover{transform:translateX(5px);box-shadow:0 8px 36px rgba(0,0,0,.3);border-color:rgba(6,182,212,.28);}
+.tlh{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start;margin-bottom:9px;}
+.tlt{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
+.tlco{margin-left:auto;padding:3px 11px;border-radius:99px;font-size:11px;font-weight:600;background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.24);color:var(--pink);}
+.tlm{font-size:12px;color:var(--muted);margin-bottom:9px;}
+.tld{font-size:13px;color:#94a3b8;line-height:1.7;margin-bottom:12px;list-style:none;}
+.tld li{padding-left:15px;position:relative;margin-bottom:3px;}
+.tld li::before{content:'▸';position:absolute;left:0;color:var(--cyan);font-size:9px;top:3px;}
+.tlbadges{display:flex;flex-wrap:wrap;gap:6px;}
+.badge{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.18);color:var(--cyan);}
+
+/* ── PROJECTS ── */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;transition:transform .28s,box-shadow .28s;}
+.pcard::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:3px;background:linear-gradient(90deg,var(--pink),var(--cyan),var(--amber));transition:left .45s ease;}
+.pcard:hover::before{left:0;}
+.pcard:hover{transform:translateY(-5px);box-shadow:0 18px 54px rgba(0,0,0,.38);}
+.pem{font-size:32px;margin-bottom:12px;display:block;}
+.pname{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;}
+.pdesc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.ptags{display:flex;flex-wrap:wrap;gap:5px;}
+.ptag{padding:3px 9px;border-radius:6px;font-size:11px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);color:#a5b4fc;}
+
+/* ── EDUCATION ── */
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:38px;}
+.ecard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;}
+.eico{font-size:28px;margin-bottom:11px;}
+.edeg{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;}
+.esch{font-size:13px;color:var(--cyan);margin-bottom:4px;}
+.edt{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.egr{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:99px;font-size:11px;font-weight:600;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.24);color:var(--amber);margin-right:7px;margin-bottom:5px;}
+.trgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;}
+.trcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.trico{font-size:24px;margin-bottom:9px;}
+.trname{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:4px;}
+.trorg{font-size:12px;color:var(--cyan);margin-bottom:3px;}
+.trdt{font-size:11px;color:var(--muted);}
+.ltit{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:16px;}
+.lbadges{display:flex;gap:12px;flex-wrap:wrap;}
+.lbadge{padding:9px 18px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;gap:9px;animation:lflt 4s ease-in-out infinite;}
+.lbadge:nth-child(2){animation-delay:.5s;}
+@keyframes lflt{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.lflag{font-size:20px;}
+.lname{font-weight:600;font-size:14px;}
+.llev{font-size:11px;color:var(--muted);}
+
+/* ── CONTACT ── */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;}
+.clist{display:flex;flex-direction:column;gap:12px;}
+.ccard{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 18px;transition:transform .28s,border-color .28s,box-shadow .28s;}
+.ccard:hover{transform:translateX(7px);border-color:rgba(6,182,212,.28);box-shadow:0 4px 18px rgba(6,182,212,.09);}
+.cico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.18);flex-shrink:0;}
+.clabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;}
+.cval{font-size:14px;font-weight:500;}
+.cavwrap{display:flex;justify-content:center;align-items:center;}
+.rw{position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center;}
+.rp{position:absolute;width:100%;height:100%;border-radius:50%;border:2px solid rgba(6,182,212,.28);animation:rout 3s ease-out infinite;}
+.rp:nth-child(2){animation-delay:1s;}.rp:nth-child(3){animation-delay:2s;}
+@keyframes rout{0%{transform:scale(.58);opacity:1;}100%{transform:scale(1.48);opacity:0;}}
+.cbigav{width:104px;height:104px;border-radius:50%;z-index:1;background:linear-gradient(135deg,var(--indigo),var(--pink));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;box-shadow:0 0 36px rgba(236,72,153,.28);}
+
+footer{position:relative;z-index:1;text-align:center;padding:26px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);}
+footer span{color:var(--pink);}
+
+@media(max-width:860px){
+  #pg-home.on{grid-template-columns:1fr;text-align:center;padding-top:86px;}
+  .hctas{justify-content:center;}
+  .hright,.cavwrap{display:none;}
+  .sgrid,.cgrid,.egrid,.trgrid,.pgrid{grid-template-columns:1fr;}
+  .pgrid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:560px){
+  .pgrid{grid-template-columns:1fr;}
+  .nlinks button{font-size:12px;}
+  .nlinks{gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="l-init">MAM</div>
+  <div class="l-bar-wrap"><div class="l-bar"></div></div>
+  <div class="l-txt">Loading Portfolio…</div>
+</div>
+
+<div id="cdot"></div>
+<div id="cring"></div>
+<canvas id="pc"></canvas>
+
+<nav>
+  <button class="nlogo" data-page="home">M. Mandour</button>
+  <ul class="nlinks">
+    <li><button data-page="skills">Skills</button></li>
+    <li><button data-page="experience">Experience</button></li>
+    <li><button data-page="projects">Projects</button></li>
+    <li><button data-page="education">Education</button></li>
+    <li><button data-page="contact">Contact</button></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<div class="pg" id="pg-home">
+  <div class="hleft">
+    <div class="atag">Available for opportunities</div>
+    <h1 class="hname">Mohamed<br/>Ali<br/>Mandour</h1>
+    <p class="hsub">Electrical Engineer — <strong>Site & Technical Office / QS</strong></p>
+    <div class="hctas">
+      <button class="btn btnp" data-page="contact">⚡ Get In Touch</button>
+      <button class="btn btno" data-page="experience">View Experience →</button>
+    </div>
+  </div>
+  <div class="hright">
+    <div class="cscene">
+      <div class="corb"></div>
+      <div class="rs1"></div><div class="rs2"></div>
+      <div class="fcard">
+        <div class="fav">MAM</div>
+        <div class="fname">Mohamed Ali Mandour</div>
+        <div class="frole">Electrical Engineer</div>
+        <div class="fstats">
+          <div><div class="sv">3+</div><div class="sl">Years</div></div>
+          <div><div class="sv">4</div><div class="sl">Projects</div></div>
+          <div><div class="sv">100</div><div class="sl">Acres</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="grid-column:1/-1;">
+    <div class="mwrap">
+      <div class="mtrack">
+        <span class="mi">SAMCRETE</span><span class="mi">JET Construction</span><span class="mi">Kafr El-Sheikh University</span><span class="mi">West Delta Electricity Company</span><span class="mi">Delta Sugar Company</span><span class="mi">Dar Al-Kahrabaa Academy</span><span class="mi">Military Reconnaissance Institute</span><span class="mi">15 May CRC Medical Complex</span>
+        <span class="mi">SAMCRETE</span><span class="mi">JET Construction</span><span class="mi">Kafr El-Sheikh University</span><span class="mi">West Delta Electricity Company</span><span class="mi">Delta Sugar Company</span><span class="mi">Dar Al-Kahrabaa Academy</span><span class="mi">Military Reconnaissance Institute</span><span class="mi">15 May CRC Medical Complex</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<div class="pg" id="pg-skills">
+  <div class="slabel">Expertise</div>
+  <h2 class="stitle">Skills & Technologies</h2>
+  <div class="sgrid">
+    <div>
+      <div class="ski"><div class="skh"><span>AutoCAD / Shop Drawings</span><span>92%</span></div><div class="skt"><div class="skf" data-p="92"></div></div></div>
+      <div class="ski"><div class="skh"><span>Lighting & Power Systems</span><span>90%</span></div><div class="skt"><div class="skf" data-p="90"></div></div></div>
+      <div class="ski"><div class="skh"><span>Quantity Surveying (QS)</span><span>88%</span></div><div class="skt"><div class="skf" data-p="88"></div></div></div>
+      <div class="ski"><div class="skh"><span>Low Current Systems</span><span>85%</span></div><div class="skt"><div class="skf" data-p="85"></div></div></div>
+      <div class="ski"><div class="skh"><span>BMS / MCC / LCP</span><span>80%</span></div><div class="skt"><div class="skf" data-p="80"></div></div></div>
+      <div class="ski"><div class="skh"><span>Revit / EPLAN</span><span>75%</span></div><div class="skt"><div class="skf" data-p="75"></div></div></div>
+      <div class="ski"><div class="skh"><span>DIALux / ETABS</span><span>72%</span></div><div class="skt"><div class="skf" data-p="72"></div></div></div>
+      <div class="ski"><div class="skh"><span>Microsoft Office Suite</span><span>85%</span></div><div class="skt"><div class="skf" data-p="85"></div></div></div>
+    </div>
+    <div>
+      <div class="chtit">Tech & Tools</div>
+      <div class="chcloud">
+        <span class="chip">AutoCAD</span><span class="chip">Revit</span><span class="chip">DIALux</span><span class="chip">ETABS</span><span class="chip">EPLAN</span><span class="chip">MS Excel</span><span class="chip">MS Word</span><span class="chip">MS PowerPoint</span><span class="chip">Fire Alarm (FACP)</span><span class="chip">CCTV</span><span class="chip">Sound System</span><span class="chip">IP Cabling</span><span class="chip">MATV</span><span class="chip">Telephone Systems</span><span class="chip">MDB / SMDB</span><span class="chip">ATS / UPS</span><span class="chip">BMS</span><span class="chip">MCC / LCP</span><span class="chip">Cable Trays</span><span class="chip">LV Cables</span><span class="chip">PLC</span><span class="chip">Solar Energy</span><span class="chip">BOQ</span><span class="chip">RFI / IR / MS</span><span class="chip">As-Built Drawings</span><span class="chip">Shop Drawings</span><span class="chip">QS / Invoicing</span><span class="chip">Site Execution</span><span class="chip">Multi-discipline Coord.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="pg" id="pg-experience">
+  <div class="slabel">Career</div>
+  <h2 class="stitle">Work Experience</h2>
+  <div class="tl">
+    <div class="tli">
+      <div class="tldot">JAN<br/>2025</div>
+      <div class="tlc">
+        <div class="tlh"><div class="tlt">Electrical Technical Office Engineer</div><div class="tlco">SAMCRETE</div></div>
+        <div class="tlm">📍 Hammam Station (EETS) · Jan 2025 – Present</div>
+        <ul class="tld">
+          <li>Prepared detailed QS and reviewed BOQ against approved drawings.</li>
+          <li>Coordinated with consultant to resolve discrepancies and technical clarifications.</li>
+          <li>Reviewed and prepared external works and site layout drawings.</li>
+          <li>Supervised First Fix electrical works — conduits, sleeves, embedded systems.</li>
+          <li>Ensured compliance with approved drawings, specs, and project standards.</li>
+        </ul>
+        <div class="tlbadges"><span class="badge">QS / BOQ</span><span class="badge">Shop Drawings</span><span class="badge">First Fix</span><span class="badge">Consultant Coordination</span></div>
+      </div>
+    </div>
+    <div class="tli">
+      <div class="tldot">MAY<br/>2025</div>
+      <div class="tlc">
+        <div class="tlh"><div class="tlt">Electrical Engineer — Site & Technical Office</div><div class="tlco">JET Construction</div></div>
+        <div class="tlm">📍 Military Reconnaissance & Vehicles Institute · May 2025 – Jan 2026</div>
+        <ul class="tld">
+          <li>Executed electrical works for a high-security military facility.</li>
+          <li>Resolved execution issues in lighting, power, and external electrical works.</li>
+          <li>Prepared and submitted full As-Built drawings for all systems.</li>
+          <li>Resolved coordination issues for lighting columns, panels, and cable paths.</li>
+          <li>Ensured final handover per consultant and military standards.</li>
+        </ul>
+        <div class="tlbadges"><span class="badge">As-Built Drawings</span><span class="badge">External Works</span><span class="badge">Military Standards</span><span class="badge">Power Distribution</span></div>
+      </div>
+    </div>
+    <div class="tli">
+      <div class="tldot">SEP<br/>2023</div>
+      <div class="tlc">
+        <div class="tlh"><div class="tlt">Electrical Engineer — Site & Technical Office</div><div class="tlco">JET Construction</div></div>
+        <div class="tlm">📍 15 May CRC – Correction & Rehabilitation Center · Sep 2023 – Oct 2025</div>
+        <ul class="tld">
+          <li>Supervised electrical works for hospitals, medical centers, and service buildings.</li>
+          <li>Installed Lighting, Power, Low Current, AC circuits, LV cables, and cable trays.</li>
+          <li>Executed MDB, SMDB, ATS, DBs, MCC, UPS, LCP, DDC, and FACP installations.</li>
+          <li>Worked on BMS systems with MCC & LCP integration.</li>
+          <li>Prepared QS; attended and prepared MOM with consultant and client.</li>
+        </ul>
+        <div class="tlbadges"><span class="badge">BMS</span><span class="badge">FACP</span><span class="badge">MDB / SMDB</span><span class="badge">UPS / ATS</span><span class="badge">Medical Projects</span></div>
+      </div>
+    </div>
+    <div class="tli">
+      <div class="tldot">JAN<br/>2024</div>
+      <div class="tlc">
+        <div class="tlh"><div class="tlt">Electrical Engineer — Technical Office</div><div class="tlco">JET Construction</div></div>
+        <div class="tlm">📍 15 May Medical Center – 100 Acre · Jan 2024 – Jun 2025</div>
+        <ul class="tld">
+          <li>Prepared design & shop drawings for lighting, power, and AC power systems.</li>
+          <li>Prepared Low Current drawings — Fire Alarm, CCTV, Sound, IP Cabling, MATV, Telephone.</li>
+          <li>Prepared material submittals and technical documents (IR, MIR, RFI, MS).</li>
+          <li>Prepared electrical QS and invoices; coordinated all engineering disciplines.</li>
+        </ul>
+        <div class="tlbadges"><span class="badge">Shop Drawings</span><span class="badge">Fire Alarm</span><span class="badge">CCTV</span><span class="badge">IP Cabling</span><span class="badge">QS / Invoices</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<div class="pg" id="pg-projects">
+  <div class="slabel">Portfolio</div>
+  <h2 class="stitle">Featured Projects</h2>
+  <div class="pgrid">
+    <div class="pcard"><span class="pem">🚄</span><div class="pname">Electrical Express Train Stations (EETS)</div><p class="pdesc">Hammam Station — QS, BOQ review, external works drawings, and First Fix supervision for a national rail infrastructure project.</p><div class="ptags"><span class="ptag">AutoCAD</span><span class="ptag">BOQ</span><span class="ptag">QS</span><span class="ptag">First Fix</span></div></div>
+    <div class="pcard"><span class="pem">🎖️</span><div class="pname">Military Reconnaissance & Vehicles Institute</div><p class="pdesc">High-security military facility — full electrical execution and As-Built drawings for all systems including cable routing and external works.</p><div class="ptags"><span class="ptag">As-Built</span><span class="ptag">External Works</span><span class="ptag">Military Compliance</span></div></div>
+    <div class="pcard"><span class="pem">🏥</span><div class="pname">15 May CRC – Rehabilitation Center</div><p class="pdesc">Large-scale medical complex — BMS, FACP, UPS/ATS, landscape lighting, and full QS. MOM preparation with client and consultant.</p><div class="ptags"><span class="ptag">BMS</span><span class="ptag">FACP</span><span class="ptag">LV Systems</span><span class="ptag">QS</span></div></div>
+    <div class="pcard"><span class="pem">🏗️</span><div class="pname">15 May Medical Center – 100 Acre</div><p class="pdesc">100-acre medical center — shop drawings for lighting, power, AC and all low-current systems. Managed submittals, RFIs, QS, and invoices.</p><div class="ptags"><span class="ptag">Shop Drawings</span><span class="ptag">CCTV</span><span class="ptag">Fire Alarm</span><span class="ptag">MATV</span></div></div>
+    <div class="pcard"><span class="pem">🌱</span><div class="pname">Smart Irrigation System (Graduation Project)</div><p class="pdesc">Grade: Excellent — automated irrigation control using PLC logic integrated with solar power generation for sustainable agriculture.</p><div class="ptags"><span class="ptag">PLC</span><span class="ptag">Solar Energy</span><span class="ptag">Automation</span><span class="ptag">Control Systems</span></div></div>
+    <div class="pcard"><span class="pem">⚡</span><div class="pname">Electrical Distribution System Design</div><p class="pdesc">Training project — full electrical design covering lighting, power, HVAC integration, low current systems, and shop drawing preparation.</p><div class="ptags"><span class="ptag">DIALux</span><span class="ptag">Lighting Design</span><span class="ptag">HVAC</span><span class="ptag">Low Current</span></div></div>
+  </div>
+</div>
+
+<!-- EDUCATION -->
+<div class="pg" id="pg-education">
+  <div class="slabel">Academic Background</div>
+  <h2 class="stitle">Education & Training</h2>
+  <div class="egrid">
+    <div class="ecard"><div class="eico">🎓</div><div class="edeg">Bachelor of Engineering</div><div style="font-size:13px;color:var(--muted);margin-bottom:5px;">Electrical Power & Machines</div><div class="esch">Kafr El-Sheikh University</div><div class="edt">Sep 2018 – May 2023</div><span class="egr">⭐ Overall: Good</span><span class="egr" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.24);color:#34d399;">🏆 Graduation: Excellent</span></div>
+    <div class="ecard"><div class="eico">🔌</div><div class="edeg">Electrical Distribution Course</div><div style="font-size:13px;color:var(--muted);margin-bottom:5px;">Professional Development</div><div class="esch">Dar Al-Kahrabaa Training Academy</div><div class="edt">Jun 2023 – Sep 2023</div><span class="egr">📐 Design & Shop Drawings</span></div>
+  </div>
+  <div class="slabel">Internships</div>
+  <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:18px;margin-top:4px;">Field Training</h3>
+  <div class="trgrid">
+    <div class="trcard"><div class="trico">🏭</div><div class="trname">West Delta Electricity Production Company</div><div class="trorg">Industrial Internship</div><div class="trdt">2022</div></div>
+    <div class="trcard"><div class="trico">🍬</div><div class="trname">Delta Sugar Company</div><div class="trorg">Industrial Internship</div><div class="trdt">2020</div></div>
+    <div class="trcard"><div class="trico">💼</div><div class="trname">Electrical Distribution Design Course</div><div class="trorg">Dar Al-Kahrabaa Training Academy</div><div class="trdt">Jun – Sep 2023</div></div>
+    <div class="trcard"><div class="trico">🛡️</div><div class="trname">Military-Grade Project Compliance</div><div class="trorg">Military Entity On-site Standards</div><div class="trdt">2023 – 2026</div></div>
+  </div>
+  <div class="ltit">Languages</div>
+  <div class="lbadges">
+    <div class="lbadge"><div class="lflag">🇪🇬</div><div><div class="lname">Arabic</div><div class="llev">Native</div></div></div>
+    <div class="lbadge"><div class="lflag">🇬🇧</div><div><div class="lname">English</div><div class="llev">Professional</div></div></div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="pg" id="pg-contact">
+  <div class="slabel">Let's Connect</div>
+  <h2 class="stitle">Get In Touch</h2>
+  <div class="cgrid">
+    <div class="clist">
+      <div class="ccard"><div class="cico">📧</div><div><div class="clabel">Email</div><div class="cval">mamandour3583@gmail.com</div></div></div>
+      <div class="ccard"><div class="cico">📱</div><div><div class="clabel">Phone</div><div class="cval">+20 101 229 7915</div></div></div>
+      <div class="ccard"><div class="cico">📍</div><div><div class="clabel">Location</div><div class="cval">Kafr El-Sheikh, Egypt</div></div></div>
+      <div class="ccard"><div class="cico">✅</div><div><div class="clabel">Availability</div><div class="cval">Open to new opportunities</div></div></div>
+      <div class="ccard"><div class="cico">🪪</div><div><div class="clabel">Military Status</div><div class="cval">Final Exemption</div></div></div>
+    </div>
+    <div class="cavwrap">
+      <div class="rw">
+        <div class="rp"></div><div class="rp"></div><div class="rp"></div>
+        <div class="cbigav">MAM</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer><p>Designed & Built with <span>♥</span> · Mohamed Ali Mandour · 2025</p></footer>
+
+<script>
+(function(){
+
+/* ── NAVIGATION ── */
+function showPage(name){
+  document.querySelectorAll('.pg').forEach(function(p){ p.classList.remove('on'); });
+  var target = document.getElementById('pg-'+name);
+  if(target){ target.classList.add('on'); }
+  document.querySelectorAll('.nlinks button').forEach(function(b){ b.classList.remove('on'); });
+  var nb = document.querySelector('.nlinks button[data-page="'+name+'"]');
+  if(nb){ nb.classList.add('on'); }
+  if(name === 'skills'){
+    setTimeout(function(){
+      document.querySelectorAll('.skf').forEach(function(f){
+        f.style.width = f.getAttribute('data-p') + '%';
+      });
+    }, 120);
+  }
+  window.scrollTo(0,0);
+}
+
+// Attach nav button listeners
+document.querySelectorAll('[data-page]').forEach(function(el){
+  el.addEventListener('click', function(){
+    showPage(this.getAttribute('data-page'));
+  });
+});
+
+// Show home by default
+showPage('home');
+
+/* ── LOADER ── */
+window.addEventListener('load', function(){
+  setTimeout(function(){ document.getElementById('loader').classList.add('gone'); }, 2200);
+});
+
+/* ── CURSOR ── */
+var dot = document.getElementById('cdot');
+var ring = document.getElementById('cring');
+var mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', function(e){
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx+'px'; dot.style.top = my+'px';
+});
+(function animR(){
+  rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animR);
+})();
+document.addEventListener('mouseover', function(e){
+  var hov = e.target.closest('button,.chip,.pcard,.tlc,.ccard');
+  if(hov){
+    dot.style.width='13px'; dot.style.height='13px'; dot.style.background='var(--pink)';
+    ring.style.width='50px'; ring.style.height='50px'; ring.style.borderColor='rgba(236,72,153,.5)';
+  } else {
+    dot.style.width='8px'; dot.style.height='8px'; dot.style.background='var(--cyan)';
+    ring.style.width='34px'; ring.style.height='34px'; ring.style.borderColor='rgba(6,182,212,.45)';
+  }
+});
+
+/* ── PARTICLES ── */
+var canvas = document.getElementById('pc');
+var ctx = canvas.getContext('2d');
+var W, H, pts=[];
+var COLORS = ['#ec4899','#06b6d4','#f59e0b','#818cf8'];
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize();
+window.addEventListener('resize', function(){ resize(); initPts(); });
+function initPts(){
+  pts=[];
+  var n = Math.floor(W*H/13000);
+  for(var i=0;i<n;i++){
+    pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*1.5+.5,c:COLORS[Math.floor(Math.random()*COLORS.length)]});
+  }
+}
+initPts();
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for(var i=0;i<pts.length;i++){
+    var p=pts[i];
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0||p.x>W) p.vx*=-1;
+    if(p.y<0||p.y>H) p.vy*=-1;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=p.c+'cc'; ctx.fill();
+  }
+  for(var i=0;i<pts.length;i++){
+    for(var j=i+1;j<pts.length;j++){
+      var dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<120){
+        ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+        var a=Math.floor((1-d/120)*80).toString(16).padStart(2,'0');
+        ctx.strokeStyle=pts[i].c+a; ctx.lineWidth=.5; ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+})();
+</script>
+</body>
+</html>
